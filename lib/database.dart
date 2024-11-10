@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cofffe/link.dart';
 import 'package:hive/hive.dart';
 
@@ -6,8 +8,14 @@ class Database {
 
   final _mybox = Hive.box('meraData');
 
+
   void loadData() {
-    Links = _mybox.get('key');
+    var loadedData = _mybox.get('key');
+  if (loadedData != null && loadedData is List) {
+    Links = List.from(loadedData);
+  } else {
+    Links = [];
+  }
   }
 
   void addData(List a) {

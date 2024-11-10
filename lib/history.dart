@@ -20,15 +20,18 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
 
+  Database db = Database();
+
   void initState() {
     super.initState();
-    //if(_myBox.get('key') != null) {
+    if(_myBox.get('key') == null) {
+      //db.initial();
+      db.Links = [];
+    }else{
       db.loadData();
-      //setState(() {});
-    //}
+    }
   }
 
-  Database db = Database();
 
   final _myBox = Hive.box('meraData');
 
