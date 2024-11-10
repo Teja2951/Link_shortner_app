@@ -35,6 +35,8 @@ dependencies:
   equatable:
   lottie:
   url_launcher: 
+  hive:
+  hive_flutter:
 
 
 

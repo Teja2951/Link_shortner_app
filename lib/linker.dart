@@ -1,25 +1,31 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:cofffe/clipboard.dart';
+import 'package:cofffe/database.dart';
 import 'package:cofffe/link.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 
 class Linker extends StatefulWidget {
   const Linker({
     super.key,
-    required this.links,
+    //required this.links,
     });
 
-    final List<Link> links;
+    //final List<Link> links;
 
   @override
   State<Linker> createState() => _LinkerState();
 }
 
 class _LinkerState extends State<Linker> {
+
+  Database db = Database();
+
+  final _myBox = Hive.box('meraData');
+
 
 
   final _formkey = GlobalKey<FormState>();
@@ -28,7 +34,7 @@ class _LinkerState extends State<Linker> {
 
   void bitingLink(String s) async{
     showDialog(
-      barrierDismissible: true,
+      barrierDismissible: false,
       context: context,
        builder: (context) {
           return Dialog(
@@ -94,16 +100,24 @@ class _LinkerState extends State<Linker> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Something went Wrong $e"),backgroundColor: Colors.red,));
       }
 
-      final resultLink = Link(
-        originalLink: s,
-        bittenLink: currLink!,
-        );
+      // final resultLink = Link(
+      //   originalLink: s,
+      //   bittenLink: currLink!,
+      //   );
 
-      if(!widget.links.contains(resultLink)){
-        widget.links.insert(0, resultLink);
-      }
+      //if(db.Links.contains(resultLink)){
+        //db.Links.add([s,currLink]);
+        //db.addData([s,currLink]);
+        db.loadData();
+        db.Links.add([s,currLink]);
+        db.saveData();
+      //}
+
+      //https://spoo.me/Nsdq6V
 
   }
+
+
 
 
 

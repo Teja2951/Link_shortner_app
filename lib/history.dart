@@ -1,15 +1,18 @@
+import 'package:cofffe/clipboard.dart';
+import 'package:cofffe/database.dart';
 import 'package:cofffe/link.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class History extends StatefulWidget {
   const History({
     super.key,
-    required this.links,
+    // required this.links,
     });
 
-    final List<Link> links;
+    // final List<Link> links;
 
   @override
   State<History> createState() => _HistoryState();
@@ -17,10 +20,23 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
 
-  void removeLink(Link link) {
+  void initState() {
+    super.initState();
+    //if(_myBox.get('key') != null) {
+      db.loadData();
+      //setState(() {});
+    //}
+  }
+
+  Database db = Database();
+
+  final _myBox = Hive.box('meraData');
+
+  void removeLink(int index) {
     setState(() {
-      widget.links.remove(link);
+      db.Links.removeAt(index);
     });
+    db.saveData();
   }
 
   void openUrl(String url) async{
@@ -31,23 +47,31 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.links.isEmpty?
+    return db.Links.isEmpty?
     Padding(
       padding: const EdgeInsets.all(20),
       child: Center(
         child: Image.asset('assets/empty.jpg'),),
     ) :
     ListView.separated(
-      itemCount: widget.links.length,
+      itemCount: db.Links.length,
       itemBuilder: (context , index){
         return ListTile(
           onTap: () {
-            openUrl(widget.links[index].bittenLink);
+            openUrl(db.Links[index][1]);
           },
-          title: Text(widget.links[index].originalLink),
-          subtitle: Text(widget.links[index].bittenLink),
+          onLongPress: () {
+             copyToClipboard(db.Links[index][1]);
+             ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Copied to clipboard"),
+                    backgroundColor: Colors.green,
+               ),
+      );
+          },
+          title: Text(db.Links[index][0]),
+          subtitle: Text(db.Links[index][1]),
           trailing: IconButton(
-            onPressed: () => removeLink(widget.links[index]),
+            onPressed: () => removeLink(index),
              icon: Icon(Icons.delete,color: Colors.red),
              ),
         );

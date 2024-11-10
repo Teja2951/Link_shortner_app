@@ -1,7 +1,8 @@
 import 'dart:convert';
 
+import 'package:cofffe/database.dart';
 import 'package:cofffe/history.dart';
-import 'package:cofffe/link.dart';
+//import 'package:cofffe/link.dart';
 import 'package:cofffe/linker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,12 +16,14 @@ class Homepage extends StatefulWidget{
 
 class _HomepageState extends State<Homepage> {
 
-  List<Link> links = [];
+  Database db = Database();
+
+  //List<Link> links = [];
   var activePage = 0;
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> screens = [Linker(links: links,),History(links: links,)];
+    List<Widget> screens = [Linker(),History()];
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
